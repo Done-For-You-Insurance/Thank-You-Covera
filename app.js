@@ -4,6 +4,8 @@
 */
 
 const I = {
+  expand: '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
+  shrink: '<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>',
   today: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/>',
   inbox: '<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
   clients: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
@@ -82,7 +84,6 @@ const clients = [
 const nav = [
   { group: null, items: [
     { id: 'todo', label: 'To do', icon: 'today', count: 4, hot: true },
-    { id: 'assistant', label: 'Assistant', icon: 'sparkles' },
   ]},
   { group: 'Agents', items: [
     { id: 'documents', label: 'Document collection', icon: 'docs', count: 3 },
@@ -103,12 +104,12 @@ const nav = [
 ];
 
 /* Detail screens light up their parent in the menu. */
-const parentOf = { opportunity: 'quoting', quotes: 'quoting', proposal: 'compare', carriers: 'settings' };
+const parentOf = { opportunity: 'quoting', quotes: 'quoting', proposal: 'compare', carriers: 'settings', appearance: 'settings' };
 
 const titles = {
   todo: 'To do', assistant: 'Assistant', documents: 'Document collection', quoting: 'Quoting', opportunity: 'Summit Ridge Framing',
   quotes: 'Carrier portals', compare: 'Quote comparison', proposal: 'Proposal', certificates: 'Certificates', opportunities: 'Opportunities',
-  policies: 'Policies', clients: 'Clients', tolink: 'To link', activity: 'Activity', performance: 'Performance', settings: 'Settings', carriers: 'Carriers and portals',
+  policies: 'Policies', clients: 'Clients', tolink: 'To link', activity: 'Activity', performance: 'Performance', settings: 'Messaging', carriers: 'Carriers and portals', appearance: 'Appearance',
 };
 
 const crumbsFor = {
@@ -118,6 +119,8 @@ const crumbsFor = {
   proposal: ['Quote comparison', 'Orchard Glen HOA', 'Proposal v2'],
   documents: ['Document collection', 'Quill & Draft Coworking'],
   carriers: ['Settings', 'Carriers and portals'],
+  settings: ['Settings', 'Messaging'],
+  appearance: ['Settings', 'Appearance'],
 };
 
 /* ---------------- Little helpers ---------------- */
@@ -129,10 +132,10 @@ function shade(hex) {
   const r = Math.max(0, (n >> 16) - 40), g = Math.max(0, ((n >> 8) & 255) - 40), b = Math.max(0, (n & 255) - 40);
   return `rgb(${r},${g},${b})`;
 }
-const spark = (pts, color = '#0b6b47') => {
+const spark = (pts, color = 'currentColor') => {
   const max = Math.max(...pts), min = Math.min(...pts);
   const d = pts.map((p, i) => `${(i / (pts.length - 1)) * 100},${30 - ((p - min) / (max - min || 1)) * 26}`).join(' ');
-  return `<svg class="spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="g${color.slice(1)}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".25"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><polygon points="0,32 ${d} 100,32" fill="url(#g${color.slice(1)})"/><polyline points="${d}" fill="none" stroke="${color}" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;
+  return `<svg class="spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="g${spark.n = (spark.n || 0) + 1}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".25"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><polygon points="0,32 ${d} 100,32" fill="url(#g${spark.n})"/><polyline points="${d}" fill="none" stroke="${color}" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;
 };
 const src = (text, derived) => `<button class="src ${derived ? 'derived' : ''}" type="button" title="Show where this came from">${ic(derived ? 'wand' : 'mail')}${text}</button>`;
 
@@ -186,7 +189,7 @@ screens.todo = () => {
         <label class="search" style="max-width:300px">${ic('search')}<span class="sr-only">Search tasks</span><input placeholder="Search or describe a task" /></label>
       </div>
       ${groups.map(([g, k, rows]) => `
-        <div style="padding:6px 18px 2px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--hairline);background:rgba(244,247,245,.6)">
+        <div style="padding:6px 18px 2px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--hairline);background:var(--inset)">
           <span class="eyebrow" style="margin:6px 0;color:${k === 'bad' ? 'var(--bad)' : k === 'wait' ? 'var(--wait)' : 'var(--ink-3)'}">${g}</span><span class="small muted">${rows.length}</span>
         </div>
         <div class="list" style="padding:0 12px">
@@ -222,37 +225,6 @@ screens.todo = () => {
     </div>
   </section>`;
 };
-
-screens.assistant = () => `
-  <div class="page-head">
-    <div><p class="eyebrow">Your agency's assistant</p><h1>What can I look into for you?</h1><p class="lede">Ask about a client, a policy or a quote, or drop in a document. Every answer quotes the page it rests on.</p></div>
-    <button class="btn" type="button" data-toast="New conversation">${ic('pen')}New conversation</button>
-  </div>
-  <section class="card edge" style="padding:22px">
-    <form class="composer" style="padding:12px 12px 12px 18px;border-radius:22px" onsubmit="event.preventDefault();document.querySelector('[data-open=assistant]').click()">
-      <label class="sr-only" for="bigAsk">Ask</label>
-      <textarea id="bigAsk" rows="2" placeholder="Try: does the Northfield BOP for Harbor Lane cover spoilage?"></textarea>
-      <button class="btn lime" type="submit">${ic('arrow')}Ask</button>
-    </form>
-    <div class="row small muted" style="margin-top:10px;gap:14px"><span>${ic('paperclip', 'width="14" height="14" style="vertical-align:-2px"')} Attach a file</span><span>@ a client</span><span>/ a skill</span><span style="margin-left:auto">Uses: Covera documents, Outlook, HawkSoft</span></div>
-  </section>
-  <section class="grid g-3">
-    ${[
-      ['checkCircle', 'Review a certificate', 'Checks every field against the policy behind it and flags E&O exposure.'],
-      ['building', 'Compare a lease to a policy', 'Marks each lease requirement Met, Partial or Failed, with the endorsement that closes it.'],
-      ['alert', 'Find coverage gaps', 'Limit changes, exclusions worth buying back, lines to add, claim scenarios.'],
-      ['compare', 'Compare quotes and policies', 'Coverages, deductibles and premiums side by side, then the client document.'],
-      ['shieldCheck', 'Ask a policy question', 'Each answer quotes the policy language it rests on.'],
-      ['wand', 'Teach a skill', 'Record your procedure once; Covera runs it on every request of the same kind.'],
-    ].map(([i, t, d]) => `<button class="card" type="button" style="text-align:left;cursor:pointer;font:inherit" data-open="assistant"><span class="tile" style="margin-bottom:12px">${ic(i)}</span><h3 style="font-size:15px">${t}</h3><p class="small muted" style="margin:6px 0 0">${d}</p></button>`).join('')}
-  </section>
-  <section class="card">
-    <div class="card-head"><h2>Recent conversations</h2></div>
-    <div class="list">
-      ${[['Carrier portal sign-in and codes', 'Yesterday'], ['Is spoilage included in the Cedar Point BOP?', 'Nov 22'], ['Lease review: Quill & Draft, 2nd floor', 'Nov 19']].map(([t, d]) => `<div class="list-item"><span class="tile">${ic('sparkles')}</span><div class="grow"><div class="title">${t}</div></div><span class="small muted">${d}</span></div>`).join('')}
-    </div>
-  </section>
-`;
 
 screens.quoting = () => `
   <div class="page-head">
@@ -364,12 +336,12 @@ screens.performance = () => `
   </section>
   <section class="grid g-main-side">
     <div class="card">
-      <div class="card-head"><div><h2>Time saved by agent</h2><div class="sub">Hours per week</div></div><div class="row small"><span class="row" style="gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:var(--forest-700)"></i>Quoting</span><span class="row" style="gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:var(--lime-deep)"></i>Documents</span><span class="row" style="gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:#9bb8aa"></i>Comparison</span></div></div>
+      <div class="card-head"><div><h2>Time saved by agent</h2><div class="sub">Hours per week</div></div><div class="row small"><span class="row" style="gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:var(--link)"></i>Quoting</span><span class="row" style="gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:var(--signal-deep)"></i>Documents</span><span class="row" style="gap:6px"><i style="width:10px;height:10px;border-radius:3px;background:var(--inset-2)"></i>Comparison</span></div></div>
       <svg viewBox="0 0 400 180" width="100%" height="220" role="img" aria-label="Hours saved per week, rising from 0.4 to 2.6">
-        ${[0, 45, 90, 135].map((y) => `<line x1="30" x2="395" y1="${y + 10}" y2="${y + 10}" stroke="rgba(11,53,38,.08)"/>`).join('')}
+        ${[0, 45, 90, 135].map((y) => `<line x1="30" x2="395" y1="${y + 10}" y2="${y + 10}" stroke="currentColor" stroke-opacity=".1"/>`).join('')}
         ${[[0.3, 0.1, 0], [0.6, 0.2, 0.1], [1.1, 0.4, 0.2], [1.6, 0.6, 0.4]].map((v, i) => {
-          const x = 60 + i * 90; let y = 145; const cols = ['#0b6b47', '#8fcf2e', '#9bb8aa'];
-          return v.map((h, j) => { const ht = h * 48; y -= ht; return `<rect x="${x}" y="${y}" width="44" height="${ht}" rx="${j === v.length - 1 || v[j + 1] === 0 ? 6 : 0}" fill="${cols[j]}"/>`; }).join('') + `<text x="${x + 22}" y="168" text-anchor="middle" font-size="11" fill="#5e6e64">Week ${i + 1}</text>`;
+          const x = 60 + i * 90; let y = 145; const cols = ['var(--brand-mid)', 'var(--signal-deep)', 'var(--inset-2)'];
+          return v.map((h, j) => { const ht = h * 48; y -= ht; return `<rect x="${x}" y="${y}" width="44" height="${ht}" rx="${j === v.length - 1 || v[j + 1] === 0 ? 6 : 0}" style="fill:${cols[j]}"/>`; }).join('') + `<text x="${x + 22}" y="168" text-anchor="middle" font-size="11" style="fill:var(--ink-3)">Week ${i + 1}</text>`;
         }).join('')}
       </svg>
     </div>
@@ -551,7 +523,7 @@ screens.opportunity = () => `
         <div class="card-head"><h2>Activity</h2></div>
         <div class="list small">
           ${[['Northfield run reached page 4', '2 min'], ['Bluestone declined: roofing over 3 stories', '9 min'], ['Payroll read from payroll-summary.pdf', '1 h'], ['File started from email', '2 h']]
-            .map(([t, m]) => `<div class="list-item"><span class="dot-live" style="animation:none;background:var(--forest-700)"></span><div class="grow">${t}</div><span class="muted">${m}</span></div>`).join('')}
+            .map(([t, m]) => `<div class="list-item"><span class="dot-live" style="animation:none;background:var(--link)"></span><div class="grow">${t}</div><span class="muted">${m}</span></div>`).join('')}
         </div>
       </div>
     </div>
@@ -627,7 +599,7 @@ screens.compare = () => {
     </div>
   </section>
   <section class="grid g-2">
-    <div class="card"><div class="card-head"><h2>${ic('sparkles', 'width="16" height="16" style="vertical-align:-3px;color:var(--forest-700)"')} Covera's read</h2></div><p style="margin:0;color:var(--ink-2)">Cedar Point is $232 cheaper, but its $150,000 property limit is below the $220,000 of equipment and inventory listed in the application, and spoilage costs extra. For a bakery, Northfield is the better fit at $3,412.</p><div class="row" style="margin-top:10px">${src('Application, page 2')}${src('Cedar Point quote, page 3')}</div></div>
+    <div class="card"><div class="card-head"><h2>${ic('sparkles', 'width="16" height="16" style="vertical-align:-3px;color:var(--link)"')} Covera's read</h2></div><p style="margin:0;color:var(--ink-2)">Cedar Point is $232 cheaper, but its $150,000 property limit is below the $220,000 of equipment and inventory listed in the application, and spoilage costs extra. For a bakery, Northfield is the better fit at $3,412.</p><div class="row" style="margin-top:10px">${src('Application, page 2')}${src('Cedar Point quote, page 3')}</div></div>
     <div class="card"><div class="card-head"><h2>Before you present</h2></div><div class="list small">
       <div class="list-item">${pill('ok', 'Checked')}<div class="grow">All 4 quotes use the same effective date</div></div>
       <div class="list-item">${pill('wait', 'Look')}<div class="grow">Bluestone lists the deductible per location, the others per claim</div></div>
@@ -643,9 +615,9 @@ screens.proposal = () => `
   </div>
   <section class="grid g-main-side">
     <div class="card" style="padding:0;overflow:hidden">
-      <div style="background:linear-gradient(135deg,#0b3526,#0b6b47);color:#fff;padding:28px 32px;position:relative;overflow:hidden">
-        <div style="position:absolute;right:-60px;top:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(184,242,90,.35),transparent 65%)"></div>
-        <p class="eyebrow" style="color:#b8f25a">Insurance proposal · prepared Nov 25, 2026</p>
+      <div style="background:linear-gradient(135deg,var(--brand-deep),var(--brand-mid));color:#fff;padding:28px 32px;position:relative;overflow:hidden">
+        <div style="position:absolute;right:-60px;top:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgb(from var(--signal-pop) r g b / .35),transparent 65%)"></div>
+        <p class="eyebrow" style="color:var(--signal-pop)">Insurance proposal · prepared Nov 25, 2026</p>
         <h1 style="color:#fff;font-size:30px">Orchard Glen Homeowners Association</h1>
         <p style="margin:8px 0 0;color:rgba(255,255,255,.8)">Prepared by Jordan Rivera, Harbor &amp; Pine Insurance</p>
       </div>
@@ -715,7 +687,7 @@ screens.documents = () => {
       </div>
       <div class="card">
         <div class="card-head"><h2>What the client sees</h2></div>
-        <div style="border-radius:16px;padding:16px;background:linear-gradient(160deg,#f6fbf7,#eaf3ee);border:1px solid var(--hairline)">
+        <div style="border-radius:16px;padding:16px;background:linear-gradient(160deg,var(--inset),var(--accent-soft));border:1px solid var(--hairline)">
           <div class="row"><img src="assets/covera-icon.svg" alt="" width="22" height="22" style="border-radius:6px" /><b class="small">Harbor &amp; Pine Insurance</b></div>
           <p class="small" style="margin:10px 0">2 documents left for your quote</p>
           <div class="bar"><i style="width:66%"></i></div>
@@ -772,17 +744,7 @@ screens.policies = () => `
 screens.settings = () => `
   <div class="page-head"><div><p class="eyebrow">Settings · Integrations</p><h1>Messaging</h1><p class="lede">The mailboxes Covera reads and the rules it follows with them. Every switch says what it changes.</p></div></div>
   <section class="grid g-side-main">
-    <div class="card" style="padding:10px">
-      <nav aria-label="Settings sections" class="stack" style="gap:2px">
-        ${[
-          ['Setup', [['checkCircle', 'Setup', '6/6']]],
-          ['My account', [['users', 'Profile'], ['sparkles', 'Memory'], ['wand', 'Skills'], ['key', 'Portal credentials']]],
-          ['Agency', [['building', 'Agency identity'], ['users', 'Team'], ['docs', 'Documents'], ['layers', 'Lines of business'], ['carriers', 'Carriers and portals', '', 'carriers']]],
-          ['Integrations', [['plug', 'Agency system'], ['mail', 'Messaging', '', '', true], ['upload', 'Storage']]],
-          ['Agents', [['bolt', 'Quoting'], ['docs', 'Document collection'], ['compare', 'Quote comparison'], ['shieldCheck', 'Certificates'], ['renew', 'Automations']]],
-        ].map(([g, items]) => `<p class="eyebrow" style="margin:10px 10px 2px;color:var(--ink-3);font-size:10.5px">${g}</p>${items.map(([i, l, badge, go, on]) => `<a href="#/${go || 'settings'}" class="row" style="flex-wrap:nowrap;gap:10px;padding:7px 10px;border-radius:10px;text-decoration:none;color:var(--ink);${on ? 'background:var(--accent-soft);font-weight:650;' : ''}">${ic(i, 'width="16" height="16" style="color:var(--forest-700)"')}<span class="small" style="flex:1">${l}</span>${badge ? `<span class="pill ok" style="height:20px">${badge}</span>` : ''}</a>`).join('')}`).join('')}
-      </nav>
-    </div>
+    ${settingsNav('Messaging')}
     <div class="stack">
       <div class="card edge">
         <div class="card-head"><div><h2>Mailboxes</h2><div class="sub">Covera reads these to find quote requests and sign-in codes. It never sends without your approval.</div></div><button class="btn sm" type="button">${ic('mail')}Connect mailbox</button></div>
@@ -795,7 +757,7 @@ screens.settings = () => `
         <div class="card-head"><h2>Automation</h2></div>
         <div class="list">
           ${[['Read new email for quote requests', 'New requests appear in Quoting, already read. Unclear ones wait in To link.', true], ['Start a file automatically', 'Creates the client and applications. Off means you click Create client and quote.', false], ['Draft document reminders', 'Reminders are saved as drafts in your Outlook for review.', true], ['Send reminders without review', 'Off by default. Turn on only for trusted templates.', false]]
-            .map(([t, d, on]) => `<div class="list-item"><div class="grow"><div class="title">${t}</div><div class="meta" style="white-space:normal">${d}</div></div><button class="switch" type="button" role="switch" aria-checked="${on}" aria-label="${t}"></button></div>`).join('')}
+            .map(([t, d, on]) => `<div class="list-item"><div class="grow"><div class="title">${t}</div><div class="meta" style="white-space:normal">${d}</div></div><input type="checkbox" switch role="switch" aria-label="${t}" ${on ? 'checked' : ''} /></div>`).join('')}
         </div>
       </div>
       <div class="card">
@@ -809,30 +771,144 @@ screens.settings = () => `
   </section>
 `;
 
+const settingsGroups = [
+  ['Setup', [['checkCircle', 'Setup', '6/6']]],
+  ['My account', [['sun', 'Appearance', '', 'appearance'], ['users', 'Profile'], ['sparkles', 'Memory'], ['wand', 'Skills'], ['key', 'Portal credentials']]],
+  ['Agency', [['building', 'Agency identity'], ['users', 'Team'], ['docs', 'Documents'], ['layers', 'Lines of business'], ['carriers', 'Carriers and portals', '', 'carriers']]],
+  ['Integrations', [['plug', 'Agency system'], ['mail', 'Messaging', '', 'settings'], ['upload', 'Storage']]],
+  ['Agents', [['bolt', 'Quoting'], ['docs', 'Document collection'], ['compare', 'Quote comparison'], ['shieldCheck', 'Certificates'], ['renew', 'Automations']]],
+];
+
+const settingsNav = (active) => `
+    <div class="card settings-nav" style="padding:10px;align-self:start">
+      <nav aria-label="Settings sections" class="stack" style="gap:2px">
+        ${settingsGroups.map(([g, items]) => `<p class="eyebrow" style="margin:10px 10px 2px;color:var(--ink-3);font-size:10.5px">${g}</p>${items.map(([i, l, badge, go]) => {
+          const on = l === active;
+          return `<a href="#/${go || 'settings'}" ${on ? 'aria-current="page"' : ''} class="row" style="flex-wrap:nowrap;gap:10px;padding:7px 10px;border-radius:10px;text-decoration:none;color:var(--ink);${on ? 'background:var(--accent-soft);font-weight:650;' : ''}">${ic(i, 'width="16" height="16" style="color:var(--link)"')}<span class="small" style="flex:1">${l}</span>${badge ? `<span class="pill ok" style="height:20px">${badge}</span>` : ''}</a>`;
+        }).join('')}`).join('')}
+      </nav>
+    </div>`;
+
+/* A tiny drawing of the app in a theme's own colors and type, so each card previews itself. */
+const themePreview = (id, t) => {
+  const fonts = { forest: 'Libre Baskerville, serif', ledger: 'EB Garamond, serif', harbor: 'Libre Baskerville, serif', blank: 'system-ui, sans-serif', arcade: 'Space Grotesk, sans-serif', citrus: 'Fraunces, serif' };
+  const dark = t.scheme === 'dark';
+  const light = t.sidebar === 'light';
+  const page = dark ? `oklch(from ${t.brand} 0.2 0.03 h)` : id === 'ledger' || id === 'citrus' || id === 'harbor' ? 'oklch(0.975 0.02 80)' : '#f6f8f7';
+  const side = light ? (dark ? '#222' : '#ffffff') : `linear-gradient(170deg, oklch(from ${t.brand} min(calc(l + 0.03), 0.37) c h), oklch(from ${t.brand} min(l, 0.34) c h))`;
+  const sideInk = light ? 'rgba(0,0,0,.35)' : 'rgba(255,255,255,.55)';
+  const ink = dark ? '#fff' : `oklch(from ${t.brand} min(l, 0.26) c h)`;
+  const r = { ledger: 3, blank: 4, harbor: 5, forest: 8, arcade: 10, citrus: 12 }[id];
+  return `<div class="theme-preview" aria-hidden="true" style="background:${side}">
+    <div class="tp-side"><i style="background:${sideInk}"></i><i style="background:${sideInk}"></i><i class="on" style="background:${page}"></i><i style="background:${sideInk}"></i></div>
+    <div class="tp-page" style="background:${page};border-radius:${r + 4}px 0 0 ${r + 4}px">
+      <span class="tp-title" style="font-family:${fonts[id]};color:${ink};font-weight:${id === 'arcade' || id === 'blank' ? 700 : 500}">Good day</span>
+      <span class="tp-row"><i class="tp-btn" style="background:oklch(from ${t.brand} min(l, 0.34) c h);border-radius:${id === 'ledger' || id === 'blank' ? 3 : 9}px"></i><i class="tp-pill" style="background:${t.signal}"></i></span>
+      <span class="tp-card" style="background:${dark ? 'rgba(255,255,255,.08)' : '#fff'};border-radius:${r}px;box-shadow:0 1px 3px rgba(0,0,0,.12)"></span>
+    </div>
+  </div>`;
+};
+
+screens.appearance = () => {
+  const A = window.CoveraAppearance;
+  const s = A.read();
+  const current = s.custom ? 'custom' : s.theme || 'forest';
+  const t = A.THEMES[s.theme] || A.THEMES.forest;
+  const scheme = s.scheme || t.scheme;
+  const sidebar = s.sidebar || t.sidebar;
+  const glass = (s.glass || t.glass) === 'on';
+  const density = s.density || 'comfortable';
+  const sysDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const groups = [['Classic and calm', ['ledger', 'harbor', 'blank']], ['Modern and bold', ['forest', 'arcade', 'citrus']]];
+  return `
+  <div class="page-head"><div><p class="eyebrow">Settings · My account</p><h1>Appearance</h1><p class="lede">Pick a theme that feels like your agency, or make your own. It changes only what you see on this device; your team keeps their own choice.</p></div>
+    <button class="btn" type="button" data-appearance="reset">${ic('renew')}Back to Forest Glass</button></div>
+  <section class="grid g-side-main">
+    ${settingsNav('Appearance')}
+    <div class="stack">
+      <div class="card edge">
+        <div class="card-head"><div><h2>Theme</h2><div class="sub">Each theme sets the colors, the type, the corners and the glass together.</div></div></div>
+        <fieldset style="border:0;margin:0;padding:0;display:grid;gap:18px">
+          <legend class="sr-only">Theme</legend>
+          ${groups.map(([label, ids]) => `<div><p class="eyebrow" style="color:var(--ink-3);margin-bottom:10px">${label}</p><div class="theme-grid">
+            ${ids.map((id) => { const th = A.THEMES[id]; return `<label class="choice"><input type="radio" name="theme" value="${id}" ${current === id ? 'checked' : ''} />${themePreview(id, th)}<span class="vibe">${th.vibe}</span><b>${th.name}</b><small>${th.blurb}</small></label>`; }).join('')}
+          </div></div>`).join('')}
+        </fieldset>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><h2>Make your own</h2><div class="sub">Two colors are enough. Covera keeps text readable: the main color is darkened and the signal brightened when needed.</div></div>${current === 'custom' ? pill('live', 'In use', 'check') : ''}</div>
+        <div class="grid g-2">
+          <label class="color-field"><input type="color" id="pickBrand" value="${s.brand || t.brand}" /><span><b class="small">Main color</b><br /><span class="small muted">Menu, buttons, links</span></span></label>
+          <label class="color-field"><input type="color" id="pickSignal" value="${s.signal || t.signal}" /><span><b class="small">Signal color</b><br /><span class="small muted">Live work, progress, your turn</span></span></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Light or dark</h2></div>
+        <fieldset class="choice-row" style="border:0;margin:0;padding:0">
+          <legend class="sr-only">Color scheme</legend>
+          ${[['light dark', `System (now ${sysDark ? 'dark' : 'light'})`, 'Follows your computer'], ['light', 'Light', 'Always light'], ['dark', 'Dark', 'Always dark']].map(([v, l, d]) => `<label class="choice"><input type="radio" name="scheme" value="${v}" ${scheme === v ? 'checked' : ''} />
+            <div class="scheme-preview">${v === 'light dark' ? '<i style="background:#1d2a24"></i><i style="background:linear-gradient(90deg,#f6f8f7 50%,#16201b 50%)"></i>' : v === 'light' ? '<i style="background:#1d3a2e"></i><i style="background:#f6f8f7"></i>' : '<i style="background:#0f1713"></i><i style="background:#1b2620"></i>'}</div>
+            <b>${l}</b><small>${d}</small></label>`).join('')}
+        </fieldset>
+        <div style="margin-top:14px">
+          <div class="setting-row"><div class="grow"><b class="small" id="lblSide">Light sidebar</b><small>A white menu instead of the deep color</small></div><input type="checkbox" switch role="switch" aria-labelledby="lblSide" data-appearance="sidebar" ${sidebar === 'light' ? 'checked' : ''} /></div>
+          <div class="setting-row"><div class="grow"><b class="small" id="lblGlass">Liquid glass</b><small>See-through, blurred top bar, assistant and search. Off is solid and fastest.</small></div><input type="checkbox" switch role="switch" aria-labelledby="lblGlass" data-appearance="glass" ${glass ? 'checked' : ''} /></div>
+          <div class="setting-row"><div class="grow"><b class="small" id="lblDense">Compact rows</b><small>Fits more clients and tasks on one screen</small></div><input type="checkbox" switch role="switch" aria-labelledby="lblDense" data-appearance="density" ${density === 'compact' ? 'checked' : ''} /></div>
+        </div>
+      </div>
+    </div>
+  </section>`;
+};
+
 /* ---------------- Shell behavior ---------------- */
 
 const $ = (s) => document.querySelector(s);
 const main = $('#main');
+const scroller = $('#scroller');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+/* Popover is Baseline 2025: load the polyfill only where it is missing. */
+if (!Object.hasOwn(HTMLElement.prototype, 'popover')) {
+  const s = document.createElement('script');
+  s.src = 'https://unpkg.com/@oddbird/popover-polyfill@0.5.2/dist/popover.min.js';
+  document.head.append(s);
+}
 
 function renderNav(active) {
   $('#nav').innerHTML = nav.map((g) => `<div class="nav-group">${g.group ? `<div class="nav-label">${g.group}</div>` : ''}${g.items.map((it) =>
     `<a href="#/${it.id}" ${it.id === active ? 'aria-current="page"' : ''}>${ic(it.icon)}<span>${it.label}</span>${it.count ? `<span class="count ${it.hot ? 'hot' : ''}">${it.count}</span>` : ''}</a>`).join('')}</div>`).join('');
 }
 
-function render() {
-  const id = (location.hash.replace(/^#\/?/, '') || 'todo').split('?')[0];
-  const key = screens[id] ? id : 'todo';
+function paint(key) {
   renderNav(parentOf[key] || key);
   const parts = crumbsFor[key] || [titles[key]];
   $('#crumbs').innerHTML = parts.map((p, i) => (i === parts.length - 1 ? `<b>${p}</b>` : `<span>${p}</span><span aria-hidden="true">/</span>`)).join('');
   main.innerHTML = screens[key]();
-  main.style.animation = 'none';
-  void main.offsetWidth;
-  main.style.animation = '';
   document.title = `${titles[key]} · Covera concept`;
   $('#assistantContext').textContent = `Looking at: ${parts[parts.length - 1]}`;
-  $('#sidebar').classList.remove('open');
-  window.scrollTo({ top: 0 });
+  scroller.scrollTop = 0;
+}
+
+let first = true;
+function render() {
+  const id = (location.hash.replace(/^#\/?/, '') || 'todo').split('?')[0];
+  if (id === 'assistant') {
+    openAssistant(true, true);
+    history.replaceState(null, '', '#/todo');
+  }
+  const key = screens[id] ? id : 'todo';
+  closeSidebar();
+  // Same-document view transition between screens, then move focus to the new page for keyboard users.
+  if (first || !document.startViewTransition || reduceMotion.matches) {
+    paint(key);
+    if (!first) main.focus({ preventScroll: true });
+    first = false;
+    return;
+  }
+  const vt = document.startViewTransition(() => paint(key));
+  vt.finished.finally(() => main.focus({ preventScroll: true }));
 }
 
 function toast(text) {
@@ -842,30 +918,188 @@ function toast(text) {
   toast.t = setTimeout(() => $('#toast').classList.remove('on'), 2400);
 }
 
-function openAssistant(open) {
-  $('#assistant').classList.toggle('open', open);
-  $('#assistant').setAttribute('aria-hidden', String(!open));
-  $('#scrim').classList.toggle('on', open || $('#palette').classList.contains('open'));
-  if (open) setTimeout(() => $('#ask').focus(), 200);
+/* ---------- Mobile menu ---------- */
+
+function closeSidebar() {
+  $('#sidebar').classList.remove('open');
+  $('#sideScrim').classList.remove('on');
+  $('#menuBtn').setAttribute('aria-expanded', 'false');
 }
 
+$('#menuBtn').addEventListener('click', () => {
+  $('#sidebar').classList.add('open');
+  $('#sideScrim').classList.add('on');
+  $('#menuBtn').setAttribute('aria-expanded', 'true');
+});
+$('#sideScrim').addEventListener('click', closeSidebar);
+
+/* ---------- The floating assistant: one non-modal dialog, draggable, dockable, full screen ---------- */
+
+const asst = $('#assistant');
+const fab = $('#askFab');
+const handle = $('#dragHandle');
+const fullBtn = asst.querySelector('[data-act="full"]');
+const POS_KEY = 'covera-assistant-position';
+const moveNote = $('#moveNote');
+
+const starters = [
+  ['checkCircle', 'Review a certificate', 'Checks every field against the policy behind it.'],
+  ['building', 'Compare a lease to a policy', 'Met, Partial or Failed for each lease requirement.'],
+  ['alert', 'Find coverage gaps', 'Limits, exclusions worth buying back, lines to add.'],
+  ['compare', 'Compare quotes', 'Coverages, deductibles and premiums side by side.'],
+  ['shieldCheck', 'Ask a policy question', 'Answers quote the policy language they rest on.'],
+  ['wand', 'Teach a skill', 'Record your steps once; Covera repeats them.'],
+];
+$('#starters').innerHTML = starters.map(([i, t, d]) => `<button class="starter" type="button" data-ask="${t}"><span class="tile">${ic(i)}</span><b>${t}</b><span>${d}</span></button>`).join('');
+
+function announce(text) {
+  moveNote.textContent = text;
+  clearTimeout(announce.t);
+  announce.t = setTimeout(() => (moveNote.textContent = ''), 1000);
+}
+
+function readPos() {
+  try {
+    return JSON.parse(localStorage.getItem(POS_KEY) || 'null');
+  } catch {
+    return null;
+  }
+}
+
+function savePos() {
+  try {
+    localStorage.setItem(POS_KEY, JSON.stringify({ left: asst.offsetLeft, top: asst.offsetTop }));
+  } catch {
+    /* Storage blocked: the position simply resets next visit. */
+  }
+}
+
+/* Every pointer and keyboard move goes through this one clamp, so the panel always stays reachable. */
+function moveTo(left, top) {
+  const maxLeft = Math.max(0, innerWidth - asst.offsetWidth);
+  const maxTop = Math.max(0, innerHeight - asst.offsetHeight);
+  asst.style.left = `${Math.max(0, Math.min(left, maxLeft))}px`;
+  asst.style.top = `${Math.max(0, Math.min(top, maxTop))}px`;
+}
+
+function dock(where) {
+  const gap = 24;
+  const w = asst.offsetWidth, h = asst.offsetHeight;
+  const spots = {
+    right: [innerWidth - w - gap, (innerHeight - h) / 2, 'docked right'],
+    left: [gap + (innerWidth > 900 ? 252 : 0), (innerHeight - h) / 2, 'docked left'],
+    corner: [innerWidth - w - gap, innerHeight - h - gap, 'moved to the bottom right corner'],
+    center: [(innerWidth - w) / 2, (innerHeight - h) / 2, 'centered'],
+  };
+  const [l, t, said] = spots[where];
+  moveTo(l, t);
+  savePos();
+  announce(`Assistant ${said}`);
+}
+
+function setFull(on) {
+  asst.classList.toggle('full', on);
+  fullBtn.setAttribute('aria-pressed', String(on));
+  fullBtn.setAttribute('aria-label', on ? 'Exit full screen' : 'Full screen');
+  fullBtn.innerHTML = ic(on ? 'shrink' : 'expand');
+  if (!on) requestAnimationFrame(() => moveTo(asst.offsetLeft, asst.offsetTop));
+}
+
+function openAssistant(open = true, full = false) {
+  if (open) {
+    if (!asst.matches(':popover-open')) {
+      asst.showPopover();
+      const p = readPos();
+      if (p) moveTo(p.left, p.top);
+      else dock('corner');
+    }
+    setFull(full || asst.classList.contains('full'));
+    fab.hidden = true;
+    fab.setAttribute('aria-expanded', 'true');
+    setTimeout(() => $('#ask').focus(), 60);
+  } else {
+    if (asst.matches(':popover-open')) asst.hidePopover();
+    fab.hidden = false;
+    fab.setAttribute('aria-expanded', 'false');
+    fab.focus();
+  }
+}
+
+fab.addEventListener('click', () => openAssistant(true));
+fullBtn.addEventListener('click', () => setFull(!asst.classList.contains('full')));
+asst.querySelector('[data-act="close"]').addEventListener('click', () => openAssistant(false));
+asst.querySelector('[data-act="new-chat"]').addEventListener('click', () => toast('New conversation'));
+$('#dockMenu').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-dock]');
+  if (!b) return;
+  setFull(false);
+  dock(b.dataset.dock);
+  $('#dockMenu').hidePopover();
+});
+
+/* Drag by the grip: pointer capture keeps the drag alive outside the handle; 4px threshold keeps clicks as clicks. */
+let off = null;
+handle.addEventListener('pointerdown', (e) => {
+  if (e.button !== 0 || asst.classList.contains('full')) return;
+  const r = asst.getBoundingClientRect();
+  off = { x: e.clientX - r.left, y: e.clientY - r.top, sx: e.clientX, sy: e.clientY, moved: false };
+  handle.setPointerCapture(e.pointerId);
+});
+handle.addEventListener('pointermove', (e) => {
+  if (!off || !handle.hasPointerCapture(e.pointerId)) return;
+  if (!off.moved && Math.hypot(e.clientX - off.sx, e.clientY - off.sy) < 4) return;
+  off.moved = true;
+  handle.classList.add('dragging');
+  moveTo(e.clientX - off.x, e.clientY - off.y);
+});
+handle.addEventListener('lostpointercapture', () => {
+  if (off?.moved) {
+    savePos();
+    announce('Assistant moved');
+  }
+  handle.classList.remove('dragging');
+  off = null;
+});
+handle.addEventListener('keydown', (e) => {
+  const step = e.shiftKey ? 60 : 15;
+  const d = { ArrowLeft: [-step, 0, 'left'], ArrowRight: [step, 0, 'right'], ArrowUp: [0, -step, 'up'], ArrowDown: [0, step, 'down'] }[e.key];
+  if (!d || asst.classList.contains('full')) return;
+  e.preventDefault();
+  moveTo(asst.offsetLeft + d[0], asst.offsetTop + d[1]);
+  savePos();
+  announce(`Assistant moved ${d[2]}`);
+});
+
+/* Keep the panel reachable when the window or the panel changes size. */
+addEventListener('resize', () => {
+  if (asst.matches(':popover-open') && !asst.classList.contains('full')) moveTo(asst.offsetLeft, asst.offsetTop);
+});
+
+$('#composer').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const q = $('#ask').value.trim();
+  if (!q) return;
+  const chat = $('#chat');
+  chat.insertAdjacentHTML('beforeend', '<div class="bubble-msg me"></div>');
+  chat.lastElementChild.textContent = q;
+  $('#ask').value = '';
+  setTimeout(() => {
+    chat.insertAdjacentHTML('beforeend', '<div class="bubble-msg ai">In the real product this answer would come from the file, the quotes and your carrier notes, with a link to each source. This concept only shows how it would look.</div>');
+    chat.scrollTop = chat.scrollHeight;
+  }, 450);
+  chat.scrollTop = chat.scrollHeight;
+});
+
+/* ---------- Search palette: a modal dialog ---------- */
+
+const palette = $('#palette');
 const paletteItems = [
   ...nav.flatMap((g) => g.items.map((it) => ({ label: it.label, icon: it.icon, href: `#/${it.id}`, hint: 'Screen' }))),
+  { label: 'Appearance and themes', icon: 'sun', href: '#/appearance', hint: 'Settings' },
+  { label: 'Ask Covera', icon: 'sparkles', href: '#/assistant', hint: 'Assistant' },
   ...clients.map((c) => ({ label: c.name, icon: 'building', href: '#/opportunity', hint: c.stage })),
   ...carriers.map((c) => ({ label: c.name, icon: 'carriers', href: '#/carriers', hint: 'Carrier' })),
 ];
-
-function openPalette(open) {
-  const p = $('#palette');
-  p.classList.toggle('open', open);
-  p.setAttribute('aria-hidden', String(!open));
-  $('#scrim').classList.toggle('on', open || $('#assistant').classList.contains('open'));
-  if (open) {
-    $('#paletteInput').value = '';
-    fillPalette('');
-    setTimeout(() => $('#paletteInput').focus(), 50);
-  }
-}
 
 function fillPalette(q) {
   const items = paletteItems.filter((x) => x.label.toLowerCase().includes(q.toLowerCase())).slice(0, 9);
@@ -874,50 +1108,12 @@ function fillPalette(q) {
     : '<li class="muted" style="padding:12px">No match. Try a client or carrier name.</li>';
 }
 
-document.addEventListener('click', (e) => {
-  const t = e.target.closest('[data-go],[data-open],[data-close],[data-toast],.switch,.seg button,.tabs button,#paletteList a,.chip');
-  if (!t) return;
-  if (t.matches('.switch')) {
-    const on = t.getAttribute('aria-checked') !== 'true';
-    t.setAttribute('aria-checked', String(on));
-    toast(`${t.getAttribute('aria-label')}: ${on ? 'on' : 'off'}`);
-    return;
-  }
-  if (t.matches('.seg button') && !t.dataset.go) {
-    t.parentElement.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === t)));
-    return;
-  }
-  if (t.matches('.tabs button')) {
-    t.parentElement.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b === t)));
-    return;
-  }
-  if (t.matches('#paletteList a')) {
-    openPalette(false);
-    return;
-  }
-  if (t.matches('.chip')) {
-    $('#ask').value = t.textContent;
-    $('#composer').requestSubmit();
-    return;
-  }
-  if (t.dataset.go) location.hash = `#/${t.dataset.go}`;
-  if (t.dataset.open === 'assistant') openAssistant(true);
-  if (t.dataset.open === 'palette') openPalette(true);
-  if (t.dataset.open === 'newRequest') toast('Paste an email, drop a file, or forward to quotes@');
-  if (t.dataset.close === 'assistant') openAssistant(false);
-  if (t.dataset.toast) toast(t.dataset.toast);
-});
-
-$('#scrim').addEventListener('click', () => {
-  openAssistant(false);
-  openPalette(false);
-  $('#sidebar').classList.remove('open');
-});
-
-$('#menuBtn').addEventListener('click', () => {
-  $('#sidebar').classList.add('open');
-  $('#scrim').classList.add('on');
-});
+function openPalette() {
+  if (palette.open) return;
+  $('#paletteInput').value = '';
+  fillPalette('');
+  palette.showModal();
+}
 
 $('#paletteInput').addEventListener('input', (e) => fillPalette(e.target.value));
 $('#paletteInput').addEventListener('keydown', (e) => {
@@ -925,42 +1121,108 @@ $('#paletteInput').addEventListener('keydown', (e) => {
     const a = $('#paletteList a');
     if (a) {
       location.hash = a.getAttribute('href');
-      openPalette(false);
+      palette.close();
     }
   }
 });
+$('#paletteList').addEventListener('click', (e) => {
+  if (e.target.closest('a')) palette.close();
+});
+
+/* closedby="any" is not in every browser yet: add click-outside only where it is missing. */
+if (!('closedBy' in HTMLDialogElement.prototype)) {
+  const outside = (e, d) => {
+    const r = d.getBoundingClientRect();
+    return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+  };
+  let pressedOutside = false;
+  palette.addEventListener('pointerdown', (e) => (pressedOutside = outside(e, palette)));
+  palette.addEventListener('pointerup', (e) => {
+    if (pressedOutside && outside(e, palette)) palette.close();
+  });
+}
+
+/* ---------- Appearance settings ---------- */
+
+function setAppearance(patch, rerender) {
+  const A = window.CoveraAppearance;
+  A.save({ ...A.read(), ...patch });
+  if (rerender && location.hash === '#/appearance') paint('appearance');
+}
+
+main.addEventListener('change', (e) => {
+  const t = e.target;
+  const A = window.CoveraAppearance;
+  if (t.name === 'theme') {
+    const keep = A.read().density;
+    A.save({ theme: t.value, density: keep });
+    paint('appearance');
+    toast(`${A.THEMES[t.value].name} theme on`);
+  } else if (t.name === 'scheme') {
+    setAppearance({ scheme: t.value });
+  } else if (t.dataset.appearance === 'sidebar') {
+    setAppearance({ sidebar: t.checked ? 'light' : 'deep' });
+  } else if (t.dataset.appearance === 'glass') {
+    setAppearance({ glass: t.checked ? 'on' : 'off' });
+  } else if (t.dataset.appearance === 'density') {
+    setAppearance({ density: t.checked ? 'compact' : 'comfortable' });
+  } else if (t.id === 'pickBrand' || t.id === 'pickSignal') {
+    setAppearance({ custom: true, brand: $('#pickBrand').value, signal: $('#pickSignal').value }, true);
+  }
+});
+
+/* Live preview while dragging the color picker, saved on change. */
+main.addEventListener('input', (e) => {
+  if (e.target.id === 'pickBrand') document.documentElement.style.setProperty('--brand', e.target.value);
+  if (e.target.id === 'pickSignal') document.documentElement.style.setProperty('--signal', e.target.value);
+});
+
+/* ---------- Clicks and keys ---------- */
+
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-go],[data-open],[data-toast],[data-appearance="reset"],.seg button,.tabs button,.chip,.starter,[data-ask]');
+  if (!t) return;
+  if (t.dataset.appearance === 'reset') {
+    window.CoveraAppearance.save({});
+    paint('appearance');
+    toast('Back to Forest Glass');
+    return;
+  }
+  if (t.matches('.seg button') && !t.dataset.go) {
+    t.parentElement.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === t)));
+    return;
+  }
+  if (t.matches('.tabs button') && !t.dataset.go) {
+    t.parentElement.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b === t)));
+    return;
+  }
+  if (t.matches('.chip, .starter')) {
+    $('#ask').value = t.dataset.ask || t.textContent.trim();
+    $('#composer').requestSubmit();
+    return;
+  }
+  if (t.dataset.go) location.hash = `#/${t.dataset.go}`;
+  if (t.dataset.open === 'assistant') openAssistant(true);
+  if (t.dataset.open === 'palette') openPalette();
+  if (t.dataset.toast) toast(t.dataset.toast);
+});
 
 document.addEventListener('keydown', (e) => {
-  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+  const mod = e.metaKey || e.ctrlKey;
+  if (mod && e.key.toLowerCase() === 'k') {
     e.preventDefault();
-    openPalette(!$('#palette').classList.contains('open'));
+    palette.open ? palette.close() : openPalette();
   }
-  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'j') {
+  if (mod && e.key.toLowerCase() === 'j') {
     e.preventDefault();
-    openAssistant(!$('#assistant').classList.contains('open'));
+    openAssistant(!asst.matches(':popover-open'));
   }
   if (e.key === 'Escape') {
-    openAssistant(false);
-    openPalette(false);
-    $('#sidebar').classList.remove('open');
-    $('#scrim').classList.remove('on');
+    if ($('#sidebar').classList.contains('open')) closeSidebar();
+    else if (asst.classList.contains('full')) setFull(false);
+    else if (asst.matches(':popover-open') && asst.contains(document.activeElement)) openAssistant(false);
   }
 });
 
-$('#composer').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const q = $('#ask').value.trim();
-  if (!q) return;
-  const chat = $('#chat');
-  chat.insertAdjacentHTML('beforeend', `<div class="bubble-msg me"></div>`);
-  chat.lastElementChild.textContent = q;
-  $('#ask').value = '';
-  setTimeout(() => {
-    chat.insertAdjacentHTML('beforeend', `<div class="bubble-msg ai">In the real product this answer would come from the file, the quotes and your carrier notes, with a link to each source. This concept only shows how it would look.</div>`);
-    chat.scrollTop = chat.scrollHeight;
-  }, 450);
-  chat.scrollTop = chat.scrollHeight;
-});
-
-window.addEventListener('hashchange', render);
+addEventListener('hashchange', render);
 render();

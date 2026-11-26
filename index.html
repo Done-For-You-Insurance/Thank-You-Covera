@@ -3,13 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <script src="theme.js"></script>
     <title>Covera Forest Glass</title>
     <meta name="description" content="A thank-you gift to the Covera team: a screen-by-screen interface review and a working redesign prototype, from the Done For You Insurance team. Unofficial concept; all data invented." />
     <meta name="theme-color" content="#0b3526" />
     <link rel="icon" href="assets/covera-icon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;650;700&family=Libre+Baskerville:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <style>
       .wrap { max-width: 1160px; margin: 0 auto; padding: 18px 16px 60px; display: grid; gap: 22px; }
@@ -18,18 +20,18 @@
       .topline .spacer { flex: 1; }
       .hero .row { margin-top: 22px; }
       .hero .btn:not(.lime) { background: rgba(255,255,255,.1); color: #fff; border-color: rgba(255,255,255,.22); }
-      .note { font-family: var(--font-display); font-size: clamp(17px, 1.8vw, 20px); line-height: 1.7; color: var(--ink-2); }
+      .note { padding: clamp(22px, 3vw, 34px); font-family: var(--font-display); font-size: clamp(17px, 1.8vw, 20px); line-height: 1.7; color: var(--ink-2); }
       .note p { margin: 0 0 14px; }
       .sig { font-family: var(--font-ui); font-size: 14px; color: var(--ink-3); }
       .section-title { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 4px 0; }
-      .section-title h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(22px, 2.4vw, 28px); color: var(--forest-900); }
+      .section-title h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(22px, 2.4vw, 28px); color: var(--heading); }
       .principle b { display: block; font-size: 15px; margin: 10px 0 4px; }
       .principle p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
       .review { display: grid; gap: 12px; }
       .review .card { display: grid; gap: 12px; }
       .review .head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
       .review .head h3 { font-size: 16px; flex: 1; min-width: 180px; }
-      .review .num { font-family: var(--font-display); font-size: 22px; color: var(--forest-700); width: 34px; }
+      .review .num { font-family: var(--font-display); font-size: 22px; color: var(--link); width: 34px; }
       .keep { font-size: 13px; color: var(--ink-2); margin: 0; }
       .keep b { color: var(--ok); }
       .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
@@ -41,18 +43,23 @@
       .toc { display: flex; flex-wrap: wrap; gap: 8px; }
       .problems { counter-reset: p; display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
       .problems li { counter-increment: p; display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: start; }
-      .problems li::before { content: counter(p); width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: var(--forest-900); background: linear-gradient(160deg, #eaffc6, var(--lime)); }
+      .problems li::before { content: counter(p); width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: var(--heading); background: linear-gradient(160deg, #eaffc6, var(--signal-pop)); }
       .problems b { display: block; }
       .problems span { color: var(--ink-2); font-size: 13.5px; }
+      .wm-dark { display: none; }
+      @media (prefers-color-scheme: dark) { :root:not(:has(meta[content="light"])) .wm-light { display: none; } :root:not(:has(meta[content="light"])) .wm-dark { display: block; } }
+      :root:has(meta[content="dark"]) .wm-light { display: none; }
+      :root:has(meta[content="dark"]) .wm-dark { display: block; }
+      .sw div { color: var(--ink); }
+      .sw { background: var(--surface); }
       footer { text-align: center; color: var(--ink-3); font-size: 12.5px; padding: 10px 0 0; }
     </style>
   </head>
   <body>
-    <div class="ambient" aria-hidden="true"></div>
-    <div class="wrap">
+        <div class="wrap">
       <div class="topline">
         <img src="assets/covera-icon.svg" alt="" width="28" height="28" style="height:28px;border-radius:8px" />
-        <img src="assets/covera-wordmark-dark.svg" alt="Covera" />
+        <img src="assets/covera-wordmark-dark.svg" alt="Covera" class="wm-light" /><img src="assets/covera-wordmark-light.svg" alt="Covera" class="wm-dark" />
         <span class="spacer"></span>
         <span class="tag">Unofficial concept</span>
       </div>
@@ -64,7 +71,7 @@
         <div class="row">
           <a class="btn lime" href="app.html#/todo">Open the working prototype</a>
           <a class="btn" href="#review">Read the screen-by-screen review</a>
-          <a class="btn" href="#system">See the design system</a>
+          <a class="btn" href="#system">See the design system and themes</a>
         </div>
       </section>
 
@@ -82,7 +89,7 @@
         <div class="card principle"><span class="tile lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h12"/></svg></span><b>One primary action per screen</b><p>Rows with four equal controls (status menu, Add, menu, remove) become one clear next step, with the rest in a quiet menu.</p></div>
         <div class="card principle"><span class="tile lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span><b>Status is a word and a shape</b><p>Every status pill carries an icon and a plain word, so it reads in grayscale and for color-blind users. Dropdowns stop pretending to be badges.</p></div>
         <div class="card principle"><span class="tile lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18"/></svg></span><b>Tables that fit</b><p>No more sideways scroll on a laptop. Empty columns ("–" all the way down) fold away; codes like AUTOP and PRJ-… become words.</p></div>
-        <div class="card principle"><span class="tile lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg></span><b>Glass for what floats, paper for what you read</b><p>The menu, top bar, assistant and search float as liquid glass. Work surfaces stay near-opaque so text keeps full contrast.</p></div>
+        <div class="card principle"><span class="tile lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg></span><b>Make it yours</b><p>Six named themes, from classic Ledger to bold Midnight Arcade, plus your own two colors, light or dark. Text stays readable whatever you pick.</p></div>
       </section>
 
       <div class="section-title" id="review"><h2>Screen by screen</h2><span class="muted small">16 screens reviewed on November 25, 2026, view-only</span></div>
@@ -95,8 +102,8 @@
 
         <article class="card"><div class="head"><span class="num">2</span><h3>Assistant</h3><a class="btn sm" href="app.html#/assistant">See the redesign</a></div>
           <p class="keep"><b>Keep:</b> the six starter ideas, "check them before you rely on them", @ for clients and / for skills.</p>
-          <div class="before-after"><div class="ba before"><h4>Today</h4><ul><li>Three columns at once (history, chat, Results/Used) before a single question is asked.</li><li>"Used 3 · Connectors 3" is jargon on an empty screen.</li><li>The question box sits at the very bottom, far from the starter cards.</li></ul></div>
-          <div class="ba after"><h4>Redesign</h4><ul><li>The question box comes first, large, with an example question.</li><li>Starter ideas as cards with one-line outcomes.</li><li>The assistant also opens as a glass side panel from any screen (Cmd J), already aware of the file you are on.</li></ul></div></div></article>
+          <div class="before-after"><div class="ba before"><h4>Today</h4><ul><li>A separate page with three columns at once (history, chat, Results/Used) before a single question is asked.</li><li>"Used 3 · Connectors 3" is jargon on an empty screen.</li><li>Asking about a file means leaving the file.</li></ul></div>
+          <div class="ba after"><h4>Redesign</h4><ul><li>One assistant, not two: a floating "Ask Covera" button on every screen (Cmd J), already aware of the file you are on.</li><li>Drag it anywhere by its grip, dock it left or right from the Position menu, or move it with the arrow keys.</li><li>One click makes it full screen, with conversation history and the starter ideas.</li></ul></div></div></article>
 
         <article class="card"><div class="head"><span class="num">3</span><h3>Document collection</h3><a class="btn sm" href="app.html#/documents">See the redesign</a></div>
           <p class="keep"><b>Keep:</b> the four count cards, completeness bars, and Expected, Received, Approved, Deferred, Waived.</p>
@@ -180,7 +187,7 @@
           <li><div><b>Stack fewer banners.</b><span>One notice at a time, each with its own fix button.</span></div></li>
           <li><div><b>Retire page-dimming tours.</b><span>Use a small hint the first time; never cover the page that is trying to explain itself.</span></div></li>
           <li><div><b>Show agents at work everywhere.</b><span>A live chip in the top bar and progress where the work is.</span></div></li>
-          <li><div><b>Bring the brand inside.</b><span>The website's forest and lime are stronger than the app's muted green and orange dot.</span></div></li>
+          <li><div><b>Bring the brand inside, then let people choose.</b><span>The website's forest and lime are stronger than the app's muted green and orange dot; themes let each agency make it theirs.</span></div></li>
           <li><div><b>Design for one hand.</b><span>Every screen in the prototype works at phone width with a slide-in menu.</span></div></li>
         </ol>
       </section>
@@ -201,7 +208,7 @@
         <div class="card">
           <div class="card-head"><h2>Type and parts</h2></div>
           <div class="type-demo">
-            <span style="font-family:var(--font-display);font-size:28px;color:var(--forest-900)">Libre Baskerville for page titles</span>
+            <span style="font-family:var(--font-display);font-size:28px;color:var(--heading)">Libre Baskerville for page titles</span>
             <span style="font-size:15px">Inter for everything you work with, numbers in tabular figures: $3,412.00</span>
           </div>
           <div class="row" style="margin-top:14px">
@@ -214,6 +221,16 @@
           </div>
           <div class="bar running" style="margin-top:14px"><i style="width:62%"></i></div>
         </div>
+      </section>
+
+      <div class="section-title" id="themes"><h2>Six themes, in Settings &gt; Appearance</h2><a class="btn sm" href="app.html#/appearance">Try them in the prototype</a></div>
+      <section class="grid g-3">
+        <div class="card"><p class="eyebrow">Classic</p><h3 style="font-size:16px">Ledger</h3><p class="small muted">Ivory paper, ink navy and old gold. Garamond headings, square corners, no glass. For agencies that want the calm of a well-kept book.</p></div>
+        <div class="card"><p class="eyebrow">Classic</p><h3 style="font-size:16px">Old Harbor</h3><p class="small muted">Navy and brass, gentle corners, Baskerville. Trustworthy and familiar, like a long-standing local agency.</p></div>
+        <div class="card"><p class="eyebrow">Basic</p><h3 style="font-size:16px">Blank Page</h3><p class="small muted">Plain white, slate and sky blue in the system font. Nothing extra, nothing to get used to.</p></div>
+        <div class="card"><p class="eyebrow">Modern</p><h3 style="font-size:16px">Forest Glass</h3><p class="small muted">Covera's own forest and lime with liquid glass. The default.</p></div>
+        <div class="card"><p class="eyebrow">Bold</p><h3 style="font-size:16px">Midnight Arcade</h3><p class="small muted">Deep violet and electric cyan, dark by default, Space Grotesk and big soft corners.</p></div>
+        <div class="card"><p class="eyebrow">Playful</p><h3 style="font-size:16px">Citrus Studio</h3><p class="small muted">Terracotta and mango on warm paper, Fraunces headlines, round everything.</p></div>
       </section>
 
       <footer>

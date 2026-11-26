@@ -3,17 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <script src="theme.js"></script>
     <title>Covera · Forest Glass prototype</title>
     <meta name="description" content="An unofficial interface makeover concept for Covera, gifted by the Done For You Insurance team. All data is made up." />
     <meta name="theme-color" content="#0b3526" />
     <link rel="icon" href="assets/covera-icon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;650;700&family=Libre+Baskerville:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="ambient" aria-hidden="true"></div>
     <a class="sr-only" href="#main">Skip to content</a>
 
     <div class="app">
@@ -21,13 +22,14 @@
         <div class="brand">
           <img class="brand-mark" src="assets/covera-icon.svg" alt="" />
           <div>
-            <img class="brand-word" src="assets/covera-wordmark-light.svg" alt="Covera" />
+            <img class="brand-word on-dark" src="assets/covera-wordmark-light.svg" alt="Covera" />
+            <img class="brand-word on-light" src="assets/covera-wordmark-dark.svg" alt="Covera" />
             <small>Harbor &amp; Pine Insurance</small>
           </div>
         </div>
 
         <button class="cmdk" type="button" data-open="palette">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <span>Search or jump to</span>
           <kbd>⌘K</kbd>
         </button>
@@ -35,23 +37,19 @@
         <nav class="nav" id="nav"></nav>
 
         <div class="sidebar-foot">
-          <button class="ask-card" type="button" data-open="assistant">
-            <span class="orb" aria-hidden="true"></span>
-            <span><b>Ask Covera</b><span>Quotes, appetite, next steps</span></span>
-          </button>
           <div class="me">
             <span class="avatar">JR</span>
-            <span style="flex:1"><b>Jordan Rivera</b><span>Harbor &amp; Pine · Admin</span></span>
-            <a class="icon-btn" href="#/settings" aria-label="Settings" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#e8f3ed">
+            <span class="who-me"><b>Jordan Rivera</b><small>Harbor &amp; Pine · Admin</small></span>
+            <a class="side-btn" href="#/appearance" aria-label="Settings">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
             </a>
           </div>
         </div>
       </aside>
 
-      <div class="main">
+      <div class="main" id="scroller">
         <header class="topbar">
-          <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Open navigation">
+          <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
           </button>
           <div class="crumbs" id="crumbs"></div>
@@ -61,7 +59,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
             <span class="badge-dot"></span>
           </button>
-          <button class="btn primary" type="button" data-open="newRequest">
+          <button class="btn primary" type="button" data-toast="Paste an email, drop a file, or forward it to quotes@">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             <span>New quote</span>
           </button>
@@ -72,51 +70,94 @@
       </div>
     </div>
 
-    <div class="scrim" id="scrim"></div>
+    <div class="side-scrim" id="sideScrim"></div>
 
-    <aside class="drawer" id="assistant" aria-label="Ask Covera" aria-hidden="true">
-      <div class="drawer-head">
-        <span class="orb" style="width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4ffd9,#b8f25a 45%,#0b6b47 100%);box-shadow:0 0 16px rgba(184,242,90,.6)" aria-hidden="true"></span>
-        <div style="flex:1">
-          <b>Ask Covera</b>
-          <div class="small muted" id="assistantContext">Looking at: Today</div>
+    <!-- One assistant: the floating "Ask Covera" button opens it; it can be dragged, docked or made full screen. -->
+    <button class="ask-fab" type="button" id="askFab" aria-controls="assistant" aria-expanded="false">
+      <span class="orb" aria-hidden="true"></span>
+      <span>Ask Covera</span>
+      <kbd>⌘J</kbd>
+    </button>
+
+    <dialog class="assistant" id="assistant" popover="manual" aria-labelledby="asstTitle">
+      <div class="asst-head">
+        <button class="drag-handle" type="button" id="dragHandle" aria-label="Move the assistant. Drag, or use the arrow keys." aria-describedby="dragHelp">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>
+        </button>
+        <span class="sr-only" id="dragHelp">Arrow keys move it 15 pixels. Hold Shift to move 60. The Position menu docks it left, right or in the corner.</span>
+        <div class="title">
+          <span class="orb sm" aria-hidden="true"></span>
+          <span style="min-width:0"><b id="asstTitle">Ask Covera</b><span id="assistantContext">Looking at: To do</span></span>
         </div>
-        <button class="icon-btn" type="button" data-close="assistant" aria-label="Close assistant">
+        <button class="icon-btn" type="button" data-act="dock" aria-label="Position" aria-haspopup="menu" popovertarget="dockMenu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M14 4v16"/></svg>
+        </button>
+        <button class="icon-btn" type="button" data-act="full" aria-label="Full screen" aria-pressed="false">
+          <svg class="i-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </button>
+        <button class="icon-btn" type="button" data-act="close" aria-label="Close the assistant">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
       </div>
-      <div class="drawer-body" id="chat">
-        <div class="bubble-msg ai">Hi Jordan. Two things need you today: <b>Summit Ridge Framing</b> is missing its payroll split, and <b>Harbor Lane Bakery</b> has 4 quotes back and is ready to compare.</div>
-        <div class="bubble-msg me">Which carriers are still running for Summit Ridge?</div>
-        <div class="bubble-msg ai">Two are live: <b>Northfield Mutual</b> (page 4 of 6, about 2 minutes left) and <b>Granite Specialty</b> (waiting on a sign-in code from your inbox). Bluestone declined: roofing over 3 stories is outside appetite.<br /><br /><span class="src"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M9 12l2 2 4-4"/></svg>From the run log, 2 min ago</span></div>
-      </div>
-      <div class="drawer-foot">
-        <div class="chips">
-          <button class="chip" type="button">What's missing?</button>
-          <button class="chip" type="button">Draft the follow-up</button>
-          <button class="chip" type="button">Compare top 3</button>
-        </div>
-        <form class="composer" id="composer">
-          <label class="sr-only" for="ask">Ask Covera</label>
-          <textarea id="ask" rows="1" placeholder="Ask about a client, a carrier or a quote"></textarea>
-          <button class="btn lime sm" type="submit" aria-label="Send">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </button>
-        </form>
-        <p class="small muted" style="margin:8px 2px 0">Answers cite their source. Nothing is sent or submitted without your click.</p>
-      </div>
-    </aside>
 
-    <div class="palette" id="palette" role="dialog" aria-label="Search or jump to" aria-hidden="true">
+      <div class="asst-body">
+        <nav class="asst-history" aria-label="Conversations">
+          <button class="btn sm" type="button" style="width:100%;margin-bottom:12px" data-act="new-chat">New conversation</button>
+          <p class="eyebrow" style="margin:6px 10px">Recent</p>
+          <a href="#" aria-current="true">Summit Ridge: who is still running</a>
+          <a href="#">Is spoilage in the Cedar Point BOP?</a>
+          <a href="#">Lease review: Quill &amp; Draft, 2nd floor</a>
+          <a href="#">Carrier sign-ins and codes</a>
+        </nav>
+        <div class="asst-main">
+          <div class="chat" id="chat">
+            <div class="asst-hello">
+              <h1>What can I look into for you?</h1>
+              <p class="muted" style="margin:6px 0 16px">Ask about a client, a policy or a quote. Every answer quotes the page it rests on.</p>
+            </div>
+            <div class="starters" id="starters"></div>
+            <div class="bubble-msg ai">Hi Jordan. Two things need you today: <b>Summit Ridge Framing</b> is missing its payroll split, and <b>Harbor Lane Bakery</b> has 4 quotes back and is ready to compare.</div>
+            <div class="bubble-msg me">Which carriers are still running for Summit Ridge?</div>
+            <div class="bubble-msg ai">Two are live: <b>Northfield Mutual</b> (page 4 of 6, about 2 minutes left) and <b>Granite Specialty</b> (waiting on a text code). Bluestone declined: roofing over 3 stories is outside appetite.</div>
+          </div>
+          <div class="asst-foot">
+            <div class="chips">
+              <button class="chip" type="button">What's missing?</button>
+              <button class="chip" type="button">Draft the follow-up</button>
+              <button class="chip" type="button">Compare top 3</button>
+            </div>
+            <form class="composer" id="composer">
+              <label class="sr-only" for="ask">Ask Covera</label>
+              <textarea id="ask" rows="1" placeholder="Ask about a client, a carrier or a quote"></textarea>
+              <button class="btn lime sm" type="submit" aria-label="Send">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </form>
+            <p class="small muted" style="margin:8px 2px 0">Answers cite their source. Nothing is sent or submitted without your click.</p>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <div class="dock-menu" id="dockMenu" popover role="menu" aria-label="Assistant position">
+      <p>Move the assistant</p>
+      <button type="button" role="menuitem" data-dock="right">Dock right</button>
+      <button type="button" role="menuitem" data-dock="left">Dock left</button>
+      <button type="button" role="menuitem" data-dock="corner">Bottom right corner</button>
+      <button type="button" role="menuitem" data-dock="center">Center</button>
+    </div>
+
+    <dialog class="palette" id="palette" closedby="any" aria-label="Search or jump to">
       <label class="sr-only" for="paletteInput">Search</label>
       <input id="paletteInput" placeholder="Search clients, carriers, screens…" autocomplete="off" />
       <ul id="paletteList"></ul>
-    </div>
+    </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
       <span id="toastText"></span>
     </div>
+    <div class="sr-only" aria-live="polite" id="moveNote"></div>
 
     <script src="app.js"></script>
   </body>
