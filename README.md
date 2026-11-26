@@ -1,8 +1,24 @@
-# Covera · Forest Glass makeover
+# Thank You Covera
+
+**Live:** https://done-for-you-insurance.github.io/Thank-You-Covera/  
+**Prototype:** https://done-for-you-insurance.github.io/Thank-You-Covera/app.html
 
 A thank-you gift to the Covera team from the Done For You Insurance team: a screen-by-screen review of the Covera agent app and a working, clickable redesign.
 
 **Start here:** open `index.html` for the note, the review of 16 screens and the design system, then `app.html` for the prototype.
+
+## A quick look
+
+| | |
+|---|---|
+| ![To do](screenshots/01-to-do.png) | ![Opportunity](screenshots/02-opportunity.png) |
+| To do names the person and what is waiting | One opportunity, one next step, every fact sourced |
+| ![Floating assistant](screenshots/12-assistant-floating.png) | ![Quote comparison](screenshots/04-quote-comparison.png) |
+| One floating assistant you can drag, dock or make full screen | Quotes side by side, differences flagged |
+| ![Appearance](screenshots/09-appearance-themes.png) | ![Midnight Arcade](screenshots/17-theme-midnight-arcade.png) |
+| Six themes plus make your own | Midnight Arcade, one of the bold themes |
+
+All 21 screenshots are in [`screenshots/`](screenshots/) and in the gallery on the live page.
 
 ## What is inside
 

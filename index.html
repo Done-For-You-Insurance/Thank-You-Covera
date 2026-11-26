@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <script src="theme.js"></script>
-    <title>Covera Forest Glass</title>
+    <title>Thank You Covera</title>
     <meta name="description" content="A thank-you gift to the Covera team: a screen-by-screen interface review and a working redesign prototype, from the Done For You Insurance team. Unofficial concept; all data invented." />
     <meta name="theme-color" content="#0b3526" />
     <link rel="icon" href="assets/covera-icon.svg" type="image/svg+xml" />
@@ -52,6 +52,17 @@
       :root:has(meta[content="dark"]) .wm-dark { display: block; }
       .sw div { color: var(--ink); }
       .sw { background: var(--surface); }
+      .gal-title { margin: 6px 4px 0; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+      .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+      .gallery.phones { grid-template-columns: repeat(auto-fill, minmax(180px, 220px)); }
+      .shot { margin: 0; display: grid; gap: 8px; }
+      .shot .frame { display: block; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; background: var(--inset); box-shadow: var(--shadow-card); transition: translate var(--dur-settle) var(--ease-out), box-shadow var(--dur-settle) var(--ease-out); }
+      .phones .shot .frame { aspect-ratio: 390 / 844; border-radius: 22px; }
+      .shot .frame:hover { translate: 0 -3px; box-shadow: var(--shadow-raised); }
+      .shot img { width: 100%; height: 100%; object-fit: cover; object-position: top left; display: block; }
+      .shot figcaption { font-size: 13px; color: var(--ink-2); padding: 0 2px; }
+      .feat-h { font-size: 15px; margin-bottom: 8px; }
+      .feat { margin: 0; padding-left: 18px; display: grid; gap: 6px; color: var(--ink-2); font-size: 13.5px; }
       footer { text-align: center; color: var(--ink-3); font-size: 12.5px; padding: 10px 0 0; }
     </style>
   </head>
@@ -70,6 +81,7 @@
         <p>We went through Covera screen by screen and button by button, then redesigned it the way we would want to use it every day: calmer, clearer about who and what each item is for, and built on your own forest green and lime. Everything here is yours to keep, copy or ignore.</p>
         <div class="row">
           <a class="btn lime" href="app.html#/todo">Open the working prototype</a>
+          <a class="btn" href="#gallery">See the screenshots</a>
           <a class="btn" href="#review">Read the screen-by-screen review</a>
           <a class="btn" href="#system">See the design system and themes</a>
         </div>
@@ -80,6 +92,67 @@
         <p>You spent real hours onboarding us, mapping our carrier portals and working through sign-in problems with us. The parts of Covera that refuse to guess, that show where every value came from, and that stop before anything is submitted are exactly right for insurance. We learned a lot from them.</p>
         <p>We are designers and builders at heart, so this is the best thank-you we know how to give: a careful review and a working redesign you can click through. No strings, nothing to sign, and no data from our account is in it. Every name and number in the prototype is made up.</p>
         <p class="sig">With gratitude, Phillip and the Done For You Insurance team</p>
+      </section>
+
+      <div class="section-title" id="features"><h2>What is in the redesign</h2><a class="btn sm" href="app.html#/todo">Open the prototype</a></div>
+      <section class="grid g-2">
+        <div class="card"><h3 class="feat-h">Work at a glance</h3><ul class="feat">
+          <li>To do that names the person, the line and what is waiting on every task</li>
+          <li>"Agents at work" with live progress for every carrier run</li>
+          <li>A live "agents working" chip in the top bar on every screen</li>
+          <li>Search and jump anywhere with ⌘K</li></ul></div>
+        <div class="card"><h3 class="feat-h">Quoting, end to end</h3><ul class="feat">
+          <li>Opportunity page with a six-step progress line and a "Ready to quote?" card</li>
+          <li>Every fact shows its source; missing fields are dashed and sorted first</li>
+          <li>Carrier portal cards with a plain step log of what the agent did</li>
+          <li>Comparison grid with "Differences only", Best fit and a sourced summary</li>
+          <li>Proposal preview with checks and version history</li></ul></div>
+        <div class="card"><h3 class="feat-h">Clients and documents</h3><ul class="feat">
+          <li>To link as an inbox: highlighted source words and three clear choices</li>
+          <li>Document checklist with the reminder draft and the client's upload view</li>
+          <li>Policies sorted by renewal with a suggestion for each</li>
+          <li>Clients, Opportunities, Activity and Performance that read at a glance</li></ul></div>
+        <div class="card"><h3 class="feat-h">Make it yours</h3><ul class="feat">
+          <li>One floating assistant: drag it, dock it, arrow-key it or go full screen</li>
+          <li>Six themes: Ledger, Old Harbor, Blank Page, Forest Glass, Midnight Arcade, Citrus Studio</li>
+          <li>Make your own with two colors; text stays readable whatever you pick</li>
+          <li>Light, dark or system; light sidebar; liquid glass on or off; compact rows</li>
+          <li>Works on a phone; respects reduced motion and reduced transparency</li></ul></div>
+      </section>
+
+      <div class="section-title" id="gallery"><h2>See it before you click</h2><span class="muted small">Every image is the working prototype. All data is invented.</span></div>
+      <h3 class="gal-title">The app</h3>
+      <section class="gallery">
+        <figure class="shot"><a class="frame" href="screenshots/01-to-do.png" target="_blank" rel="noopener"><img src="screenshots/01-to-do.png" alt="To do: every task names the person and what is waiting, with agents at work on the side." loading="lazy" width="1440" height="900" /></a><figcaption>To do: every task names the person and what is waiting, with agents at work on the side.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/02-opportunity.png" target="_blank" rel="noopener"><img src="screenshots/02-opportunity.png" alt="An opportunity: six-step progress, sourced facts, the one missing field, and a single "Quote the 4 that fit" action." loading="lazy" width="1440" height="900" /></a><figcaption>An opportunity: six-step progress, sourced facts, the one missing field, and a single "Quote the 4 that fit" action.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/03-carrier-portals.png" target="_blank" rel="noopener"><img src="screenshots/03-carrier-portals.png" alt="Carrier portals: each carrier runs side by side; running, needs a code, quoted, declined, sign-in failed." loading="lazy" width="1440" height="900" /></a><figcaption>Carrier portals: each carrier runs side by side; running, needs a code, quoted, declined, sign-in failed.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/04-quote-comparison.png" target="_blank" rel="noopener"><img src="screenshots/04-quote-comparison.png" alt="Quote comparison: grouped rows, differences flagged, a Best fit column and Covera's plain-language read." loading="lazy" width="1440" height="900" /></a><figcaption>Quote comparison: grouped rows, differences flagged, a Best fit column and Covera's plain-language read.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/05-document-collection.png" target="_blank" rel="noopener"><img src="screenshots/05-document-collection.png" alt="Document collection: one checklist, the reminder draft beside it, and what the client sees." loading="lazy" width="1440" height="900" /></a><figcaption>Document collection: one checklist, the reminder draft beside it, and what the client sees.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/06-to-link.png" target="_blank" rel="noopener"><img src="screenshots/06-to-link.png" alt="To link: the email with highlighted source words, what Covera understood, and three clear choices." loading="lazy" width="1440" height="900" /></a><figcaption>To link: the email with highlighted source words, what Covera understood, and three clear choices.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/07-proposal.png" target="_blank" rel="noopener"><img src="screenshots/07-proposal.png" alt="Proposal: a branded live preview, checks and versions. Drafting the email never sends it." loading="lazy" width="1440" height="900" /></a><figcaption>Proposal: a branded live preview, checks and versions. Drafting the email never sends it.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/10-quoting.png" target="_blank" rel="noopener"><img src="screenshots/10-quoting.png" alt="Quoting: stages as a compact switch, carrier tiles, and "where it stands" in words." loading="lazy" width="1440" height="900" /></a><figcaption>Quoting: stages as a compact switch, carrier tiles, and "where it stands" in words.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/08-carriers-and-portals.png" target="_blank" rel="noopener"><img src="screenshots/08-carriers-and-portals.png" alt="Carriers and portals: problems first, the reason in plain words, one fix button." loading="lazy" width="1440" height="900" /></a><figcaption>Carriers and portals: problems first, the reason in plain words, one fix button.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/11-performance.png" target="_blank" rel="noopener"><img src="screenshots/11-performance.png" alt="Performance: time saved per week that reads even with little data." loading="lazy" width="1440" height="900" /></a><figcaption>Performance: time saved per week that reads even with little data.</figcaption></figure>
+      </section>
+      <h3 class="gal-title">One floating assistant</h3>
+      <section class="gallery">
+        <figure class="shot"><a class="frame" href="screenshots/12-assistant-floating.png" target="_blank" rel="noopener"><img src="screenshots/12-assistant-floating.png" alt="Ask Covera floats over any screen and knows the file you are on. Drag it by its grip or dock it." loading="lazy" width="1440" height="900" /></a><figcaption>Ask Covera floats over any screen and knows the file you are on. Drag it by its grip or dock it.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/13-assistant-full-screen.png" target="_blank" rel="noopener"><img src="screenshots/13-assistant-full-screen.png" alt="One click makes it full screen, with history and starter ideas." loading="lazy" width="1440" height="900" /></a><figcaption>One click makes it full screen, with history and starter ideas.</figcaption></figure>
+      </section>
+      <h3 class="gal-title">Six themes in Settings › Appearance</h3>
+      <section class="gallery">
+        <figure class="shot"><a class="frame" href="screenshots/09-appearance-themes.png" target="_blank" rel="noopener"><img src="screenshots/09-appearance-themes.png" alt="Appearance: six named themes, make your own, light or dark, sidebar, glass, density." loading="lazy" width="1440" height="900" /></a><figcaption>Appearance: six named themes, make your own, light or dark, sidebar, glass, density.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/14-theme-ledger.png" target="_blank" rel="noopener"><img src="screenshots/14-theme-ledger.png" alt="Ledger: classic ivory, ink navy and old gold." loading="lazy" width="1440" height="900" /></a><figcaption>Ledger: classic ivory, ink navy and old gold.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/15-theme-old-harbor.png" target="_blank" rel="noopener"><img src="screenshots/15-theme-old-harbor.png" alt="Old Harbor: navy and brass." loading="lazy" width="1440" height="900" /></a><figcaption>Old Harbor: navy and brass.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/16-theme-blank-page.png" target="_blank" rel="noopener"><img src="screenshots/16-theme-blank-page.png" alt="Blank Page: plain white and slate." loading="lazy" width="1440" height="900" /></a><figcaption>Blank Page: plain white and slate.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/17-theme-midnight-arcade.png" target="_blank" rel="noopener"><img src="screenshots/17-theme-midnight-arcade.png" alt="Midnight Arcade: violet and electric cyan, after dark." loading="lazy" width="1440" height="900" /></a><figcaption>Midnight Arcade: violet and electric cyan, after dark.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/18-theme-citrus-studio.png" target="_blank" rel="noopener"><img src="screenshots/18-theme-citrus-studio.png" alt="Citrus Studio: terracotta and mango." loading="lazy" width="1440" height="900" /></a><figcaption>Citrus Studio: terracotta and mango.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/19-forest-glass-dark.png" target="_blank" rel="noopener"><img src="screenshots/19-forest-glass-dark.png" alt="Forest Glass in dark mode." loading="lazy" width="1440" height="900" /></a><figcaption>Forest Glass in dark mode.</figcaption></figure>
+      </section>
+      <h3 class="gal-title">On a phone</h3>
+      <section class="gallery phones">
+        <figure class="shot"><a class="frame" href="screenshots/20-phone-to-do.png" target="_blank" rel="noopener"><img src="screenshots/20-phone-to-do.png" alt="To do on a phone, with the slide-in menu." loading="lazy" width="390" height="844" /></a><figcaption>To do on a phone, with the slide-in menu.</figcaption></figure>
+        <figure class="shot"><a class="frame" href="screenshots/21-phone-assistant.png" target="_blank" rel="noopener"><img src="screenshots/21-phone-assistant.png" alt="The assistant fills the screen on a phone." loading="lazy" width="390" height="844" /></a><figcaption>The assistant fills the screen on a phone.</figcaption></figure>
       </section>
 
       <div class="section-title"><h2>Six ideas behind the makeover</h2></div>
